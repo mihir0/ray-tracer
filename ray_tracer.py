@@ -6,6 +6,8 @@ import numpy as np
 import math as math
 from PIL import Image
 from PVector import PVector
+import sys #for progress bar printing
+import time
 def setup():
     size(300, 300)
     noStroke()
@@ -34,6 +36,8 @@ def keyPressed(key):
         interpreter("i9.cli")
     elif key == '0':
         interpreter("i10.cli")
+    else:
+        exit()
 
 def interpreter(fname):
     global light_list, sphere_list, cylinder_list, object_list, bgcolor,surface, fov
@@ -108,7 +112,6 @@ def getHitShadingColor(hit):
         shadow_hit = intersect_scene(shadow_ray)
         
         #find max t-value for when shadow_ray hits light source
-        #intersection_point[0] + t * shadow_vec.x = light[3]
         light_t = 0
         if (shadow_vec.x != 0):
             light_t = (light[3] - intersection_point[0])/shadow_vec.x
@@ -140,7 +143,7 @@ def getHitShadingColor(hit):
 
 def shade(ray, depth):
     global bgcolor
-    if (depth > 7):
+    if (depth > 10):
         return bgcolor
     hit = intersect_scene(ray)
     if (hit is not None):
@@ -184,8 +187,9 @@ def render_scene():
     global sphere_list
     global light_list
     global bgcolor
-    height = 300
-    width = 300
+    t0 = time.time()
+    height = 600
+    width = 600
     buffer = np.zeros((width, height, 3), dtype = np.uint8)
 
     for j in range(height):
@@ -201,7 +205,14 @@ def render_scene():
             direction_vector = (x_vp - 0, y_vp - 0, z_vp - 0)
             eye_ray = Ray(direction_vector, origin=[0.0,0.0,0.0])
             pixel_color = shade(eye_ray, 0)
-            buffer[j, i] = [min(255, int(255 * pixel_color[0])), min(255, int(255 * pixel_color[1])), min(255, int(255 * pixel_color[2]))]
+            buffer[j, i] = [min(255, int(255 * pixel_color[0])),
+                min(255, int(255 * pixel_color[1])),
+                min(255, int(255 * pixel_color[2]))]
+            percentage = (float(j * width + i) / float(width * height)) * 100
+            if percentage % 1 == 0:
+                sys.stdout.flush()
+                sys.stdout.write("\r%d%%" % (percentage))
+    sys.stdout.write("\r%d ms\n" % ((time.time() - t0) * 1000))
     image = Image.fromarray(buffer) #PIL image
     image.show()
 
@@ -218,13 +229,7 @@ cylinder_list = []
 object_list = []
 light_list = []
 bgcolor = (0.0, 0.0, 0.0)
-'''keyPressed('1')
-keyPressed('2')
-keyPressed('3')
-keyPressed('4')
-keyPressed('5')
-keyPressed('6')
-keyPressed('7')'''
-keyPressed('8')
-keyPressed('9')
-keyPressed('0')
+
+while True:
+    key = raw_input("Enter input:")
+    keyPressed(key)

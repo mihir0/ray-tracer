@@ -1,3 +1,4 @@
+from PVector import PVector
 class Hit:
     intersection_point = (0.0, 0.0, 0.0)
     surface = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
@@ -7,7 +8,6 @@ class Hit:
         self.intersection_point = intersection_point
         self.surface = surface
         self.surface_normal = surface_normal
-        #self.surface_normal.set(surface_normal) <------ Problem line!!!!!
         self.t = t
     def getPosition(self):
         return self.intersection_point
