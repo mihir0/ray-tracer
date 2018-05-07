@@ -8,11 +8,6 @@ from PIL import Image
 from PVector import PVector
 import sys #for progress bar printing
 import time
-def setup():
-    size(300, 300)
-    noStroke()
-    colorMode(RGB, 1.0)  # Processing color values will be in [0, 1]  (not 255)
-    background(0, 0, 0)
 
 # read and interpret the appropriate scene description .cli file based on key press
 def keyPressed(key):
@@ -78,7 +73,6 @@ def interpreter(fname):
             ymin = float(words[4])
             ymax = float(words[5])
             object_list.append(('cylinder', radius, x, z, ymin, ymax, surface))
-            
         elif words[0] == 'write':
             render_scene()    # render the scene
             
